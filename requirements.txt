@@ -1,0 +1,12 @@
+python-dotenv>=1.0.0
+pydantic==2.8.0
+flake8===7.3.0
+crewai==0.186.1
+langchain-community==0.3.29
+yfinance==0.2.65
+crewai-tools==0.71.0
+streamlit>=1.49.0
+markdown>=3.9
+pdfkit>=0.17.2
+#sentence-transformers==5.1.0
+#PyTorch>=1.0.0

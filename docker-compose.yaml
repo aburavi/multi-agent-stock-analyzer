@@ -1,0 +1,21 @@
+services:
+  app:
+    build: ./
+    container_name: app
+    env_file:
+      - env.sample
+    volumes:
+      - ./app:/app
+    restart: unless-stopped
+    ports:
+      - 8000:8080
+    networks:
+      - appai
+
+volumes:
+  db_data:
+
+networks:
+  appai:
+    driver: bridge
+    
