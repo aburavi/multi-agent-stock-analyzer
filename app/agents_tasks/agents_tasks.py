@@ -1,4 +1,5 @@
 from crewai import Agent, Task, Crew, Process, LLM
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from custom_tools import (
     fetch_stock_data, 
     fetch_stock_financials, 
@@ -9,7 +10,7 @@ from custom_tools import (
 import os
 from config import settings
 from datetime import datetime
-# from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # Current date for context
 Today = datetime.now().strftime("%Y-%m-%d")
@@ -18,32 +19,62 @@ Today = datetime.now().strftime("%Y-%m-%d")
 settings.OPENAI_API_KEY = "dummy-key"
 
 # Create a single LLM instance to be used by all agents
-def get_llm():
-    gemini_key = settings.GEMINI_API_KEY
-    model_name = settings.MODEL_NAME # Use the standard model name
-    print(f"DEBUG: GeminiKey is {gemini_key}")
-    print(f"DEBUG: ModelName is {model_name}")
+def get_llm_gemini():
+    provider = settings.GOOGLE_LANGCHAIN_PROVIDER
+    key = settings.GEMINI_API_KEY
+    model_name = settings.GEMINI_MODEL_NAME # Use the standard model name
     
-    if not gemini_key:
+    if not key:
         raise ValueError("Missing GEMINI_API_KEY in .env file: ")
     
     # Create CrewAI LLM instance with Gemini
     return LLM(
-        provider="google",
+        provider=provider,
         model=model_name,
-        api_key=gemini_key,
+        api_key=key,
         temperature=0,
         verbose=True
     )
 
+def get_llm_huggingface():
+    provider = settings.HUGGINGFACE_LANGCHAIN_PROVIDER
+    key = settings.HUGGINGFACE_API_KEY
+    model_name = settings.HUGGINGFACE_MODEL_NAME # Use the standard model name
+    
+    if not key:
+        raise ValueError("Missing HUGGINGFACE_API_KEY in .env file: ")
+    
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    # Load model with optimizations for GPU (if available)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=torch.bfloat16,  # Use bfloat16 for efficiency
+        device_map="auto",           # Automatically use GPU if available
+        # load_in_4bit=True,         # Uncomment for 4-bit quantization (slower but memory efficient)
+    )
+
+    # Create text generation pipeline
+    return LLM(
+        provider=provider,
+        model=model,
+        api_key=tokenizer,
+        temperature=0.7,
+        top_p=0.95,
+        repetition_penalty=1.15
+    )
+
 # Create the LLM instance
-llm_instance = get_llm()
+llm_instance = get_llm_gemini()
+#llm_instance = get_llm_huggingface()
 
 # Create embeddings instance
-""" embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
+embedding_model_name = "sentence-transformers/all-MiniLM-L6-v2"
+embeddings = HuggingFaceEmbeddings(
+    model_name=embedding_model_name,
     model_kwargs={'device': 'cpu'}
-) """
+)
+print("✅ Embeddings loaded:", embedding_model_name)
 
 # Agent for gathering financial data
 data_collector = Agent(

@@ -22,24 +22,37 @@ class Settings:
     ACCESSLOG: str = os.getenv("ACCESSLOG", "-")
     ERRORLOG = os.getenv("ERRORLOG", "-")
     LOGLEVEL = os.getenv("LOGLEVEL", "debug")
-    #agent LLM
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
-    MODEL_NAME:str = os.getenv("MODEL_NAME")
-    LITELLM_PROVIDER:str = os.getenv("LITELLM_PROVIDER")
-    LITELLM_API_KEY:str = os.getenv("LITELLM_API_KEY")
-    GOOGLE_APPLICATION_CREDENTIALS:str = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    #Gemini LLM
+    GEMINI_API_KEY: str = os.getenv("GG_GEMINI_API_KEY")
+    GEMINI_MODEL_NAME:str = os.getenv("GG_MODEL_NAME")
+    GEMINI_LITELLM_PROVIDER:str = os.getenv("GG_LITELLM_PROVIDER")
+    GEMINI_LITELLM_API_KEY:str = os.getenv("GG_LITELLM_API_KEY")
+    GOOGLE_APPLICATION_CREDENTIALS:str = os.getenv("GG_GOOGLE_APPLICATION_CREDENTIALS")
     GOOGLE_API_KEY = GEMINI_API_KEY
-    GOOGLE_APPLICATION_CREDENTIALS = GOOGLE_APPLICATION_CREDENTIALS
     # Set Langchain specific environment variables
-    LANGCHAIN_API_KEY = GEMINI_API_KEY
-    LANGCHAIN_PROVIDER:str = os.getenv("PROVIDER")
+    GOOGLE_LANGCHAIN_API_KEY = GEMINI_API_KEY
+    GOOGLE_LANGCHAIN_PROVIDER:str = os.getenv("GG_PROVIDER")
+    
+    #Huggingface LLM
+    HUGGINGFACE_API_KEY: str = os.getenv("HG_API_KEY")
+    HUGGINGFACE_MODEL_NAME:str = os.getenv("HG_MODEL_NAME")
+    HUGGINGFACE_LITELLM_PROVIDER:str = os.getenv("HG_LITELLM_PROVIDER")
+    HUGGINGFACE_LITELLM_API_KEY:str = os.getenv("HG_LITELLM_API_KEY")
+    
+    HUGGINGFACE_LANGCHAIN_API_KEY = HUGGINGFACE_API_KEY
+    HUGGINGFACE_LANGCHAIN_PROVIDER:str = os.getenv("HG_PROVIDER")
     
     # Remove any conflicting environment variables
-    OPENAI_API_KEY:str = os.environ.pop("OPENAI_API_KEY", None)
-    LITELLM_OPENAI_API_KEY:str = os.environ.pop("LITELLM_OPENAI_API_KEY", None)
-    LITELLM_API_KEY:str = os.environ.pop("LITELLM_API_KEY", None)
-    LITELLM_PROVIDER:str = os.environ.pop("LITELLM_PROVIDER", None)
+    OPENAI_API_KEY:str = os.environ.pop("OA_API_KEY", None)
+    OPENAI_LITELLM_OPENAI_API_KEY:str = os.environ.pop("OA_LITELLM_OPENAI_API_KEY", None)
+    OPENAI_LITELLM_API_KEY:str = os.environ.pop("OA_LITELLM_API_KEY", None)
+    OPENAI_LITELLM_PROVIDER:str = os.environ.pop("OA_LITELLM_PROVIDER", None)
+    
+    # crewAI
     CREWAI_API_KEY:str = os.environ.pop("CREWAI_API_KEY", None)
     CREWAI_PROVIDER:str = os.environ.pop("CREWAI_PROVIDER", None)
 
+    os.environ["PROJECT_ID"] = "API Project"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
+    
 settings = Settings()
