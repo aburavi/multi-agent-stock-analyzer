@@ -42,6 +42,16 @@ class Settings:
     HUGGINGFACE_LANGCHAIN_API_KEY = HUGGINGFACE_API_KEY
     HUGGINGFACE_LANGCHAIN_PROVIDER:str = os.getenv("HG_PROVIDER")
     
+    #Qwen LLM
+    QWEN_BASE_URL: str = os.getenv("QW_BASE_URL")
+    QWEN_API_KEY: str = os.getenv("QW_API_KEY")
+    QWEN_MODEL_NAME:str = os.getenv("QW_MODEL_NAME")
+    QWEN_LITELLM_PROVIDER:str = os.getenv("QW_LITELLM_PROVIDER")
+    QWEN_LITELLM_API_KEY:str = os.getenv("QW_LITELLM_API_KEY")
+    
+    QWEN_LANGCHAIN_API_KEY = QWEN_API_KEY
+    QWEN_LANGCHAIN_PROVIDER:str = os.getenv("QW_PROVIDER")
+    
     # Remove any conflicting environment variables
     OPENAI_API_KEY:str = os.environ.pop("OA_API_KEY", None)
     OPENAI_LITELLM_OPENAI_API_KEY:str = os.environ.pop("OA_LITELLM_OPENAI_API_KEY", None)
@@ -52,7 +62,10 @@ class Settings:
     CREWAI_API_KEY:str = os.environ.pop("CREWAI_API_KEY", None)
     CREWAI_PROVIDER:str = os.environ.pop("CREWAI_PROVIDER", None)
 
+
     os.environ["PROJECT_ID"] = "API Project"
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_APPLICATION_CREDENTIALS
+    os.environ["DASHSCOPE_API_KEY"] = QWEN_API_KEY
+    os.environ["OPENAI_API_KEY"] = QWEN_API_KEY
     
 settings = Settings()

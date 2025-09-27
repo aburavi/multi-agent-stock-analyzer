@@ -2,3 +2,4 @@ app/application_default_credentials.json
 app/key.json
 app/.DS_Store
 env-ori.sample
+env-with-value.sample

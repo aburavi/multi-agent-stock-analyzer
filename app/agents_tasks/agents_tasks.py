@@ -10,7 +10,8 @@ from custom_tools import (
 import os
 from config import settings
 from datetime import datetime
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_openai import ChatOpenAI
 
 # Current date for context
 Today = datetime.now().strftime("%Y-%m-%d")
@@ -36,45 +37,50 @@ def get_llm_gemini():
         verbose=True
     )
 
-def get_llm_huggingface():
-    provider = settings.HUGGINGFACE_LANGCHAIN_PROVIDER
-    key = settings.HUGGINGFACE_API_KEY
-    model_name = settings.HUGGINGFACE_MODEL_NAME # Use the standard model name
+# def get_llm_huggingface():
+#     provider = settings.HUGGINGFACE_LANGCHAIN_PROVIDER
+#     key = settings.HUGGINGFACE_API_KEY
+#     model_name = settings.HUGGINGFACE_MODEL_NAME # Use the standard model name
     
-    if not key:
-        raise ValueError("Missing HUGGINGFACE_API_KEY in .env file: ")
+#     if not key:
+#         raise ValueError("Missing HUGGINGFACE_API_KEY in .env file: ")
     
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    # Load model with optimizations for GPU (if available)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        torch_dtype=torch.bfloat16,  # Use bfloat16 for efficiency
-        device_map="auto",           # Automatically use GPU if available
-        # load_in_4bit=True,         # Uncomment for 4-bit quantization (slower but memory efficient)
-    )
+#     # Load model with optimizations for GPU (if available)
+#     model = AutoModelForCausalLM.from_pretrained(
+#         model_name,
+#         torch_dtype=torch.bfloat16,  # Use bfloat16 for efficiency
+#         device_map="auto",           # Automatically use GPU if available
+#         # load_in_4bit=True,         # Uncomment for 4-bit quantization (slower but memory efficient)
+#     )
 
-    # Create text generation pipeline
-    return LLM(
-        provider=provider,
-        model=model,
-        api_key=tokenizer,
-        temperature=0.7,
-        top_p=0.95,
-        repetition_penalty=1.15
-    )
-
+#     # Create text generation pipeline
+#     return LLM(
+#         provider=provider,
+#         model=model,
+#         api_key=tokenizer,
+#         temperature=0.7,
+#         top_p=0.95,
+#         repetition_penalty=1.15
+#     )
+    
 # Create the LLM instance
-llm_instance = get_llm_gemini()
+#llm_instance = get_llm_gemini()
 #llm_instance = get_llm_huggingface()
+llm_instance = ChatOpenAI(
+    model=settings.QWEN_MODEL_NAME,  # Use verified model name
+    base_url=settings.QWEN_BASE_URL,
+    temperature=0.7
+)
 
 # Create embeddings instance
-embedding_model_name = "sentence-transformers/all-MiniLM-L6-v2"
-embeddings = HuggingFaceEmbeddings(
-    model_name=embedding_model_name,
-    model_kwargs={'device': 'cpu'}
-)
-print("✅ Embeddings loaded:", embedding_model_name)
+# embedding_model_name = "sentence-transformers/all-MiniLM-L6-v2"
+# embeddings = HuggingFaceEmbeddings(
+#     model_name=embedding_model_name,
+#     model_kwargs={'device': 'cpu'}
+# )
+# print("✅ Embeddings loaded:", embedding_model_name)
 
 # Agent for gathering financial data
 data_collector = Agent(

@@ -18,3 +18,4 @@ langchain
 huggingface-hub
 accelerate
 bitsandbytes
+langchain-openai
